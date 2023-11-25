@@ -1,6 +1,6 @@
 <?php
 
-function caesarCipherEncrypt($text, $shift)
+function caesarCipherEncrypt($text, $key)
 {
   $result = '';
 
@@ -8,44 +8,38 @@ function caesarCipherEncrypt($text, $shift)
   for ($i = 0; $i < $textLength; $i++) {
     $char = $text[$i];
     if (ctype_upper($char)) {
-      $result .= chr((ord($char) + $shift - 65) % 26 + 65);
+      $result .= chr((ord($char) + $key - 65) % 26 + 65);
+    } elseif (ctype_lower($char)) {
+      $result .= chr((ord($char) + $key - 97) % 26 + 97);
+      continue;
     }
 
-    elseif (ctype_lower($char)) {
-      $result .= chr((ord($char) + $shift - 97) % 26 + 97);
-      continue; // Skip to the next iteration
-    }
-    // Non-alphabetic characters remain unchanged
     $result .= $char;
   }
 
   return $result;
 }
 
-function caesarCipherDecrypt($text, $shift)
+function caesarCipherDecrypt($text, $key)
 {
-  // To decrypt a Caesar cipher, the shift value is negated
-  $shift = -$shift;
-  return caesarCipherEncrypt($text, $shift);
+  $key = -$key;
+  return caesarCipherEncrypt($text, $key);
 }
 
-// Initialize variables
 $text = '';
-$shift = 0;
+$key = 0;
 $encryptedText = '';
 $decryptedText = '';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $text = $_POST['text'];
-  $shift = (int) $_POST['shift'];
+  $key = (int) $_POST['key'];
 
   if (isset($_POST['encrypt'])) {
-    // Encrypt
-    $encryptedText = caesarCipherEncrypt($text, $shift);
+
+    $encryptedText = caesarCipherEncrypt($text, $key);
   } elseif (isset($_POST['decrypt'])) {
-    // Decrypt
-    $decryptedText = caesarCipherDecrypt($text, $shift);
+    $decryptedText = caesarCipherDecrypt($text, $key);
   }
 }
 ?>
@@ -62,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form method="post" action="">
     <label for="text">Enter text:</label><br>
     <textarea id="text" name="text"><?php echo htmlentities($text); ?></textarea><br><br>
-    <label for="shift">Enter shift value:</label><br>
-    <input type="number" id="shift" name="shift" value="<?php echo $shift; ?>"><br><br>
+    <label for="key">Enter Key:</label><br>
+    <input type="number" id="key" name="key" value="<?php echo $key; ?>"><br><br>
     <input type="submit" name="encrypt" value="Encrypt">
     <input type="submit" name="decrypt" value="Decrypt">
   </form>
@@ -71,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php if ($encryptedText || $decryptedText): ?>
     <h2>Result:</h2>
     <?php if (isset($_POST['encrypt'])): ?>
-      <p>Encrypted Text:
+      <p>Encrypted Cipher Text:
         <?php echo htmlentities($encryptedText); ?>
       </p>
     <?php elseif (isset($_POST['decrypt'])): ?>
-      <p>Decrypted Text:
+      <p>Decrypted Plain Text:
         <?php echo htmlentities($decryptedText); ?>
       </p>
     <?php endif; ?>
