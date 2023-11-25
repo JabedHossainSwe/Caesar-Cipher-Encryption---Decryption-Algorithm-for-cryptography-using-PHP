@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
   <h1>Caesar Cipher Encryption & Decryption</h1>
-  <form method="post" action="">
+  <form method="post">
     <label for="text">Enter text:</label><br>
     <textarea id="text" name="text"><?php echo htmlentities($text); ?></textarea><br><br>
     <label for="key">Enter Key:</label><br>
