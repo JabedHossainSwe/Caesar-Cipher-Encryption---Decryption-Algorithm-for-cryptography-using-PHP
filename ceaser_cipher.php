@@ -8,13 +8,12 @@ function caesarCipherEncrypt($text, $key)
   for ($i = 0; $i < $textLength; $i++) {
     $char = $text[$i];
     if (ctype_upper($char)) {
-      $result .= chr((ord($char) + $key - 65) % 26 + 65);
+      $result .= chr((ord($char) + $key - 65) % 26 + 65); 
     } elseif (ctype_lower($char)) {
-      $result .= chr((ord($char) + $key - 97) % 26 + 97);
-      continue;
+      $result .= chr((ord($char) + $key - 97) % 26 + 97); 
+    } else {
+      $result .= $char; 
     }
-
-    $result .= $char;
   }
 
   return $result;
@@ -22,9 +21,23 @@ function caesarCipherEncrypt($text, $key)
 
 function caesarCipherDecrypt($text, $key)
 {
-  $key = -$key;
-  return caesarCipherEncrypt($text, $key);
+  $result = '';
+
+  $textLength = strlen($text);
+  for ($i = 0; $i < $textLength; $i++) {
+    $char = $text[$i];
+    if (ctype_upper($char)) {
+      $result .= chr(((ord($char) - $key - 65 + 26) % 26) + 65); 
+    } elseif (ctype_lower($char)) {
+      $result .= chr(((ord($char) - $key - 97 + 26) % 26) + 97); 
+    } else {
+      $result .= $char; /
+    }
+  }
+
+  return $result;
 }
+
 
 $text = '';
 $key = 0;
@@ -36,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $key = (int) $_POST['key'];
 
   if (isset($_POST['encrypt'])) {
-
     $encryptedText = caesarCipherEncrypt($text, $key);
   } elseif (isset($_POST['decrypt'])) {
     $decryptedText = caesarCipherDecrypt($text, $key);
@@ -48,7 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 
 <head>
-  <title>Caesar Cipher Encryption & Decryption</title>
+  <title>Caesar Cipher</title>
+
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
