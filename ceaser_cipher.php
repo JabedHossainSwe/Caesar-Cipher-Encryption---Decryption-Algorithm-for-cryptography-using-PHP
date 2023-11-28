@@ -31,7 +31,7 @@ function caesarCipherDecrypt($text, $key)
     } elseif (ctype_lower($char)) {
       $result .= chr(((ord($char) - $key - 97 + 26) % 26) + 97); 
     } else {
-      $result .= $char; /
+      $result .= $char;
     }
   }
 
